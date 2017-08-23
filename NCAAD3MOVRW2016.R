@@ -34,8 +34,8 @@ for(i in seq(1,(2*MaxMOV-1))){
 }
 Expecteds<-solve(MOVChain,rhs)
 #pulling data from Massey Site
-scores <- read.csv("http://www.masseyratings.com/scores.php?s=284067&sub=11620&all=1&mode=3&format=1", header=FALSE)
-teams <- read.csv("http://www.masseyratings.com/scores.php?s=284067&sub=11620&all=1&mode=3&format=2", header=FALSE)
+scores <- read.csv("http://www.masseyratings.com/scores.php?s=292154&sub=11620&all=1&mode=3&format=1", header=FALSE)
+teams <- read.csv("http://www.masseyratings.com/scores.php?s=292154&sub=11620&all=1&mode=3&format=2", header=FALSE)
 names(scores)<-c("Time","Date","Team1","Home1","Score1","Team2","Home2","Score2")
 names(teams)<-c("Label","Team")
 
@@ -82,6 +82,7 @@ for(i in 1:length(scores$Team1) ){
     print(c(i,Share1,Share2))
   }
 }
+A_unnormed <- A
 for(i in 1:length(teams[,2])){
   if(sum(A[i,])!=0){ 
     A[i,]=A[i,]/sum(A[i,])
@@ -89,11 +90,11 @@ for(i in 1:length(teams[,2])){
 }
 #rank<-sol/norm(sol,"2")
 Rating<-eigen(t(A))$vectors[,1]
-Rating<-Rating/sum(Rating)*dim(teams)[1]/2
+Rating<-Rating/sum(Rating)*dim(teams)[1]
 rankedteams<-cbind(teams,as.numeric(Rating))
 rankedteams<-rankedteams[ order(Rating,decreasing=TRUE), ]
 rankings<-cbind(seq(1,length(rankedteams$Team)),rankedteams[2:3])
 names(rankings)<-c("Ranking",names(rankings)[2],"Rating")
 row.names(rankings)<-seq(nrow(rankings))
 write.csv(rankings, paste("Basketball-D3 MOV RW ", format(Sys.time(),"%Y %m %d"),".csv",sep=""), row.names = FALSE)
-
+predict_info <- full_join(rankings, teams, by="Team")

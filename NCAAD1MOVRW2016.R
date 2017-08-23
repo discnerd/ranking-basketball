@@ -1,4 +1,4 @@
-
+library(dplyr)
 p3<-73267/429614
 p2<-196861/429614
 p1<-(1-p3-p2)
@@ -77,7 +77,9 @@ for(i in 1:length(scores$Team1) ){
   if( i%%10 ==0 ){
     print(c(i,Share1,Share2))
   }
+
 }
+A_unnormed <- A
 for(i in 1:length(teams[,2])){
   if(sum(A[i,])!=0){ 
     A[i,]=A[i,]/sum(A[i,])
@@ -100,4 +102,7 @@ rankings<-cbind(seq(1,length(rankedteams$Team)),rankedteams[2:3])
 names(rankings)<-c("Ranking",names(rankings)[2],"Rating")
 row.names(rankings)<-seq(nrow(rankings))
 write.csv(rankings, paste("D1 MOV RW ", format(Sys.time(),"%Y %m %d"),".csv",sep=""), row.names = FALSE)
+
+predict_info <- full_join(rankings, teams, by="Team")
+
 
